@@ -1,7 +1,15 @@
+require 'pg'
+
 class Bookmarks
-  
-  def self.list
-    ['https://github.com/', 'https://www.youtube.com/user/pokemon']
+
+  def self.all
+    if ENV['ENVIRONMENT'] == 'test'
+      connection = PG.connect(dbname: 'bookmark_manager_test')
+    else
+      connection = PG.connect(dbname: 'bookmark_manager')
+    end
+    bookmarks = connection.exec('SELECT * FROM bookmarks;')
+    bookmarks.map { |bookmark| bookmark['url'] }
   end
   
 end
